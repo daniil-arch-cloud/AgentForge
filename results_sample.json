@@ -1,0 +1,1341 @@
+{
+  "timestamp_utc": "2026-10-20T12:42:10.498025+00:00",
+  "model": "gemini-3.5-flash-lite",
+  "selection_rule": "max TRAIN answer accuracy (numeric and relation); tiebreaker: semantic TRAIN tool-trace compliance",
+  "train_case_count": 8,
+  "holdout_case_count": 4,
+  "initial_instruction": "Ты помощник по анализу бюджетов проектов. Отвечай кратко и по-русски.",
+  "selected_instruction": "Ты эксперт по анализу бюджетов проектов. Действуй строго по шагам:\n1. Получи исходные бюджеты Alpha и Beta с помощью get_project_budget ровно по одному разу для каждого проекта.\n2. Выполни изменения последовательно, ровно в том порядке, в котором они указаны в условии. Для каждого изменения используй apply_percentage_change, передавая в качестве `value` актуальное промежуточное значение текущего проекта, а в качестве `percentage` — знаковое число из условия (например, -30 для уменьшения на 30%).\n3. Для финального сравнения итоговых бюджетов через calculate_percentage_increase четко определи базу для сравнения: в параметр `new_value` передай итоговое значение сравниваемого проекта, а в `old_value` — итоговое значение базового проекта (того, относительно которого считается процент).\n4. Отвечай кратко и по-русски. В финальном ответе не путай знак изменения с формулировкой «больше» или «меньше» и обязательно укажи, какой именно итоговый бюджет больше.",
+  "history": [
+    {
+      "generation": 0,
+      "instruction": "Ты помощник по анализу бюджетов проектов. Отвечай кратко и по-русски.",
+      "train": {
+        "accuracy": 0.75,
+        "numeric_accuracy": 0.75,
+        "relation_accuracy": 0.875,
+        "tool_trace_compliance": 0.875
+      },
+      "accepted": true
+    },
+    {
+      "generation": 1,
+      "instruction": "Ты эксперт по анализу бюджетов проектов. Действуй строго по шагам:\n1. Получи исходные бюджеты Alpha и Beta с помощью get_project_budget ровно по одному разу для каждого проекта.\n2. Выполни изменения последовательно, ровно в том порядке, в котором они указаны в условии. Для каждого изменения используй apply_percentage_change, передавая в качестве `value` актуальное промежуточное значение текущего проекта, а в качестве `percentage` — знаковое число из условия (например, -30 для уменьшения на 30%).\n3. Для финального сравнения итоговых бюджетов через calculate_percentage_increase четко определи базу для сравнения: в параметр `new_value` передай итоговое значение сравниваемого проекта, а в `old_value` — итоговое значение базового проекта (того, относительно которого считается процент).\n4. Отвечай кратко и по-русски. В финальном ответе не путай знак изменения с формулировкой «больше» или «меньше» и обязательно укажи, какой именно итоговый бюджет больше.",
+      "train": {
+        "accuracy": 1.0,
+        "numeric_accuracy": 1.0,
+        "relation_accuracy": 1.0,
+        "tool_trace_compliance": 1.0
+      },
+      "accepted": true
+    }
+  ],
+  "baseline_train": {
+    "accuracy": 0.75,
+    "numeric_accuracy": 0.75,
+    "relation_accuracy": 0.875,
+    "tool_trace_compliance": 0.875,
+    "results": [
+      {
+        "question": "Исходные бюджеты Alpha и Beta доступны через инструменты. Изменения по порядку: бюджет Alpha увеличили на 10%; затем бюджет Alpha уменьшили на 10%; бюджет Beta не менялся. Каков процентный размер отличия итогового бюджета Alpha от итогового бюджета Beta? Укажи процент и обязательно назови, какой бюджет больше.",
+        "expected": 23.71,
+        "predicted": 23.71,
+        "answer": "Бюджет Beta больше бюджета Alpha на 23.71%.",
+        "correct": true,
+        "numeric_correct": true,
+        "relation_correct": true,
+        "tool_trace_compliant": true,
+        "tool_issues": [],
+        "tool_calls": [
+          {
+            "tool": "get_project_budget",
+            "args": {
+              "project_name": "alpha"
+            },
+            "result": 2100000.0
+          },
+          {
+            "tool": "get_project_budget",
+            "args": {
+              "project_name": "beta"
+            },
+            "result": 2725000.0
+          },
+          {
+            "tool": "apply_percentage_change",
+            "args": {
+              "project_name": "alpha",
+              "value": 2100000,
+              "percentage": 10
+            },
+            "result": 2310000.0
+          },
+          {
+            "tool": "apply_percentage_change",
+            "args": {
+              "project_name": "alpha",
+              "value": 2310000,
+              "percentage": -10
+            },
+            "result": 2079000.0
+          },
+          {
+            "tool": "calculate_percentage_increase",
+            "args": {
+              "new_value": 2079000,
+              "old_value": 2725000
+            },
+            "result": -23.71
+          }
+        ]
+      },
+      {
+        "question": "Исходные бюджеты Alpha и Beta доступны через инструменты. Изменения по порядку: бюджет Beta уменьшили на 20%; затем бюджет Beta увеличили на 25%; бюджет Alpha не менялся. Каков процентный размер отличия итогового бюджета Alpha от итогового бюджета Beta? Укажи процент и обязательно назови, какой бюджет больше.",
+        "expected": 24.53,
+        "predicted": 24.53,
+        "answer": "Бюджет Alpha больше бюджета Beta на **24.53%**.",
+        "correct": true,
+        "numeric_correct": true,
+        "relation_correct": true,
+        "tool_trace_compliant": true,
+        "tool_issues": [],
+        "tool_calls": [
+          {
+            "tool": "get_project_budget",
+            "args": {
+              "project_name": "alpha"
+            },
+            "result": 1650000.0
+          },
+          {
+            "tool": "get_project_budget",
+            "args": {
+              "project_name": "beta"
+            },
+            "result": 1325000.0
+          },
+          {
+            "tool": "apply_percentage_change",
+            "args": {
+              "project_name": "beta",
+              "value": 1325000,
+              "percentage": -20
+            },
+            "result": 1060000.0
+          },
+          {
+            "tool": "apply_percentage_change",
+            "args": {
+              "project_name": "beta",
+              "value": 1060000,
+              "percentage": 25
+            },
+            "result": 1325000.0
+          },
+          {
+            "tool": "calculate_percentage_increase",
+            "args": {
+              "new_value": 1650000,
+              "old_value": 1325000
+            },
+            "result": 24.53
+          }
+        ]
+      },
+      {
+        "question": "Исходные бюджеты Alpha и Beta доступны через инструменты. Изменения по порядку: бюджет Alpha увеличили на 20%; затем бюджет Beta увеличили на 50%. Каков процентный размер отличия итогового бюджета Alpha от итогового бюджета Beta? Укажи процент и обязательно назови, какой бюджет больше.",
+        "expected": 110.91,
+        "predicted": 110.91,
+        "answer": "dul_error\nБюджет Alpha больше бюджета Beta на 110.91%.",
+        "correct": true,
+        "numeric_correct": true,
+        "relation_correct": true,
+        "tool_trace_compliant": true,
+        "tool_issues": [],
+        "tool_calls": [
+          {
+            "tool": "get_project_budget",
+            "args": {
+              "project_name": "alpha"
+            },
+            "result": 2175000.0
+          },
+          {
+            "tool": "get_project_budget",
+            "args": {
+              "project_name": "beta"
+            },
+            "result": 825000.0
+          },
+          {
+            "tool": "apply_percentage_change",
+            "args": {
+              "project_name": "alpha",
+              "value": 2175000,
+              "percentage": 20
+            },
+            "result": 2610000.0
+          },
+          {
+            "tool": "apply_percentage_change",
+            "args": {
+              "project_name": "beta",
+              "value": 825000,
+              "percentage": 50
+            },
+            "result": 1237500.0
+          },
+          {
+            "tool": "calculate_percentage_increase",
+            "args": {
+              "new_value": 2610000,
+              "old_value": 1237500
+            },
+            "result": 110.91
+          }
+        ]
+      },
+      {
+        "question": "Исходные бюджеты Alpha и Beta доступны через инструменты. Изменения по порядку: бюджет Beta увеличили на 50%; бюджет Alpha не менялся. Каков процентный размер отличия итогового бюджета Alpha от итогового бюджета Beta? Укажи процент и обязательно назови, какой бюджет больше.",
+        "expected": 18.35,
+        "predicted": 18.35,
+        "answer": "Бюджет Beta больше. Итоговый бюджет Alpha меньше бюджета Beta на 18.35%.",
+        "correct": true,
+        "numeric_correct": true,
+        "relation_correct": true,
+        "tool_trace_compliant": true,
+        "tool_issues": [],
+        "tool_calls": [
+          {
+            "tool": "get_project_budget",
+            "args": {
+              "project_name": "alpha"
+            },
+            "result": 2725000.0
+          },
+          {
+            "tool": "get_project_budget",
+            "args": {
+              "project_name": "beta"
+            },
+            "result": 2225000.0
+          },
+          {
+            "tool": "apply_percentage_change",
+            "args": {
+              "project_name": "beta",
+              "value": 2225000,
+              "percentage": 50
+            },
+            "result": 3337500.0
+          },
+          {
+            "tool": "calculate_percentage_increase",
+            "args": {
+              "new_value": 2725000,
+              "old_value": 3337500
+            },
+            "result": -18.35
+          }
+        ]
+      },
+      {
+        "question": "Исходные бюджеты Alpha и Beta доступны через инструменты. Изменения по порядку: бюджет Alpha уменьшили на 30%; затем бюджет Beta увеличили на 10%. Каков процентный размер отличия итогового бюджета Alpha от итогового бюджета Beta? Укажи процент и обязательно назови, какой бюджет больше.",
+        "expected": 47.93,
+        "predicted": 92.06,
+        "answer": "Бюджет Beta больше бюджетов Alpha на 92.06%.",
+        "correct": false,
+        "numeric_correct": false,
+        "relation_correct": true,
+        "tool_trace_compliant": false,
+        "tool_issues": [
+          "Неверный new_value в итоговом сравнении: ожидалось 630000.0, получено 1210000",
+          "Неверная база процента (old_value): ожидалось 1210000.0, получено 630000",
+          "Неверный результат calculate_percentage_increase: ожидалось -47.93, получено 92.06"
+        ],
+        "tool_calls": [
+          {
+            "tool": "get_project_budget",
+            "args": {
+              "project_name": "alpha"
+            },
+            "result": 900000.0
+          },
+          {
+            "tool": "get_project_budget",
+            "args": {
+              "project_name": "beta"
+            },
+            "result": 1100000.0
+          },
+          {
+            "tool": "apply_percentage_change",
+            "args": {
+              "project_name": "alpha",
+              "value": 900000,
+              "percentage": -30
+            },
+            "result": 630000.0
+          },
+          {
+            "tool": "apply_percentage_change",
+            "args": {
+              "project_name": "beta",
+              "value": 1100000,
+              "percentage": 10
+            },
+            "result": 1210000.0
+          },
+          {
+            "tool": "calculate_percentage_increase",
+            "args": {
+              "new_value": 1210000,
+              "old_value": 630000
+            },
+            "result": 92.06
+          }
+        ]
+      },
+      {
+        "question": "Исходные бюджеты Alpha и Beta доступны через инструменты. Изменения по порядку: бюджет Alpha увеличили на 15%; затем бюджет Alpha увеличили на 10%; бюджет Beta не менялся. Каков процентный размер отличия итогового бюджета Alpha от итогового бюджета Beta? Укажи процент и обязательно назови, какой бюджет больше.",
+        "expected": 43.36,
+        "predicted": 43.36,
+        "answer": "Итоговый бюджет **Beta** больше итогового бюджета Alpha на 43.36%.",
+        "correct": true,
+        "numeric_correct": true,
+        "relation_correct": true,
+        "tool_trace_compliant": true,
+        "tool_issues": [],
+        "tool_calls": [
+          {
+            "tool": "get_project_budget",
+            "args": {
+              "project_name": "alpha"
+            },
+            "result": 750000.0
+          },
+          {
+            "tool": "get_project_budget",
+            "args": {
+              "project_name": "beta"
+            },
+            "result": 1675000.0
+          },
+          {
+            "tool": "apply_percentage_change",
+            "args": {
+              "project_name": "alpha",
+              "value": 750000,
+              "percentage": 15
+            },
+            "result": 862500.0
+          },
+          {
+            "tool": "apply_percentage_change",
+            "args": {
+              "project_name": "alpha",
+              "value": 862500,
+              "percentage": 10
+            },
+            "result": 948750.0
+          },
+          {
+            "tool": "calculate_percentage_increase",
+            "args": {
+              "new_value": 948750,
+              "old_value": 1675000
+            },
+            "result": -43.36
+          }
+        ]
+      },
+      {
+        "question": "Исходные бюджеты Alpha и Beta доступны через инструменты. Изменения по порядку: бюджет Alpha уменьшили на 20%; затем бюджет Beta уменьшили на 5%. Каков процентный размер отличия итогового бюджета Alpha от итогового бюджета Beta? Укажи процент и обязательно назови, какой бюджет больше.",
+        "expected": 47.37,
+        "predicted": null,
+        "answer": "ServerError: 500 INTERNAL. {'error': {'code': 500, 'message': 'Internal error encountered.', 'status': 'INTERNAL'}}",
+        "correct": false,
+        "numeric_correct": false,
+        "relation_correct": false,
+        "tool_trace_compliant": true,
+        "tool_issues": [],
+        "tool_calls": [
+          {
+            "tool": "get_project_budget",
+            "args": {
+              "project_name": "alpha"
+            },
+            "result": 2275000.0
+          },
+          {
+            "tool": "get_project_budget",
+            "args": {
+              "project_name": "beta"
+            },
+            "result": 1300000.0
+          },
+          {
+            "tool": "apply_percentage_change",
+            "args": {
+              "project_name": "alpha",
+              "value": 2275000,
+              "percentage": -20
+            },
+            "result": 1820000.0
+          },
+          {
+            "tool": "apply_percentage_change",
+            "args": {
+              "project_name": "beta",
+              "value": 1300000,
+              "percentage": -5
+            },
+            "result": 1235000.0
+          },
+          {
+            "tool": "calculate_percentage_increase",
+            "args": {
+              "new_value": 1820000,
+              "old_value": 1235000
+            },
+            "result": 47.37
+          }
+        ]
+      },
+      {
+        "question": "Исходные бюджеты Alpha и Beta доступны через инструменты. Изменения по порядку: бюджет Alpha увеличили на 15%; затем бюджет Beta увеличили на 30%. Каков процентный размер отличия итогового бюджета Alpha от итогового бюджета Beta? Укажи процент и обязательно назови, какой бюджет больше.",
+        "expected": 47.23,
+        "predicted": 47.23,
+        "answer": "Бюджет Beta больше. Итоговый бюджет Alpha меньше Beta на 47.23%.",
+        "correct": true,
+        "numeric_correct": true,
+        "relation_correct": true,
+        "tool_trace_compliant": true,
+        "tool_issues": [],
+        "tool_calls": [
+          {
+            "tool": "get_project_budget",
+            "args": {
+              "project_name": "alpha"
+            },
+            "result": 850000.0
+          },
+          {
+            "tool": "get_project_budget",
+            "args": {
+              "project_name": "beta"
+            },
+            "result": 1425000.0
+          },
+          {
+            "tool": "apply_percentage_change",
+            "args": {
+              "project_name": "alpha",
+              "value": 850000,
+              "percentage": 15
+            },
+            "result": 977500.0
+          },
+          {
+            "tool": "apply_percentage_change",
+            "args": {
+              "project_name": "beta",
+              "value": 1425000,
+              "percentage": 30
+            },
+            "result": 1852500.0
+          },
+          {
+            "tool": "calculate_percentage_increase",
+            "args": {
+              "new_value": 977500,
+              "old_value": 1852500
+            },
+            "result": -47.23
+          }
+        ]
+      }
+    ]
+  },
+  "selected_train": {
+    "accuracy": 1.0,
+    "numeric_accuracy": 1.0,
+    "relation_accuracy": 1.0,
+    "tool_trace_compliance": 1.0,
+    "results": [
+      {
+        "question": "Исходные бюджеты Alpha и Beta доступны через инструменты. Изменения по порядку: бюджет Alpha увеличили на 10%; затем бюджет Alpha уменьшили на 10%; бюджет Beta не менялся. Каков процентный размер отличия итогового бюджета Alpha от итогового бюджета Beta? Укажи процент и обязательно назови, какой бюджет больше.",
+        "expected": 23.71,
+        "predicted": 23.71,
+        "answer": "Итоговый бюджет Alpha (2 079 000 руб.) меньше итогового бюджета Beta (2 725 000 руб.) на 23.71%. Бюджет Beta больше.",
+        "correct": true,
+        "numeric_correct": true,
+        "relation_correct": true,
+        "tool_trace_compliant": true,
+        "tool_issues": [],
+        "tool_calls": [
+          {
+            "tool": "get_project_budget",
+            "args": {
+              "project_name": "alpha"
+            },
+            "result": 2100000.0
+          },
+          {
+            "tool": "get_project_budget",
+            "args": {
+              "project_name": "beta"
+            },
+            "result": 2725000.0
+          },
+          {
+            "tool": "apply_percentage_change",
+            "args": {
+              "project_name": "alpha",
+              "value": 2100000,
+              "percentage": 10
+            },
+            "result": 2310000.0
+          },
+          {
+            "tool": "apply_percentage_change",
+            "args": {
+              "project_name": "alpha",
+              "value": 2310000,
+              "percentage": -10
+            },
+            "result": 2079000.0
+          },
+          {
+            "tool": "calculate_percentage_increase",
+            "args": {
+              "new_value": 2079000,
+              "old_value": 2725000
+            },
+            "result": -23.71
+          }
+        ]
+      },
+      {
+        "question": "Исходные бюджеты Alpha и Beta доступны через инструменты. Изменения по порядку: бюджет Beta уменьшили на 20%; затем бюджет Beta увеличили на 25%; бюджет Alpha не менялся. Каков процентный размер отличия итогового бюджета Alpha от итогового бюджета Beta? Укажи процент и обязательно назови, какой бюджет больше.",
+        "expected": 24.53,
+        "predicted": 24.53,
+        "answer": "Итоговый бюджет Alpha составляет 1 650 000 рублей, а итоговый бюджет Beta — 1 325 000 рублей. \n\nБюджет Alpha больше бюджета Beta на 24,53% (относительно бюджета Beta).",
+        "correct": true,
+        "numeric_correct": true,
+        "relation_correct": true,
+        "tool_trace_compliant": true,
+        "tool_issues": [],
+        "tool_calls": [
+          {
+            "tool": "get_project_budget",
+            "args": {
+              "project_name": "alpha"
+            },
+            "result": 1650000.0
+          },
+          {
+            "tool": "get_project_budget",
+            "args": {
+              "project_name": "beta"
+            },
+            "result": 1325000.0
+          },
+          {
+            "tool": "apply_percentage_change",
+            "args": {
+              "project_name": "beta",
+              "value": 1325000,
+              "percentage": -20
+            },
+            "result": 1060000.0
+          },
+          {
+            "tool": "apply_percentage_change",
+            "args": {
+              "project_name": "beta",
+              "value": 1060000,
+              "percentage": 25
+            },
+            "result": 1325000.0
+          },
+          {
+            "tool": "calculate_percentage_increase",
+            "args": {
+              "new_value": 1650000,
+              "old_value": 1325000
+            },
+            "result": 24.53
+          }
+        ]
+      },
+      {
+        "question": "Исходные бюджеты Alpha и Beta доступны через инструменты. Изменения по порядку: бюджет Alpha увеличили на 20%; затем бюджет Beta увеличили на 50%. Каков процентный размер отличия итогового бюджета Alpha от итогового бюджета Beta? Укажи процент и обязательно назови, какой бюджет больше.",
+        "expected": 110.91,
+        "predicted": 110.91,
+        "answer": "Итоговый бюджет Alpha составляет 2 610 000 рублей, а итоговый бюджет Beta — 1 237 500 рублей. \n\nБюджет Alpha больше бюджета Beta на 110.91%.",
+        "correct": true,
+        "numeric_correct": true,
+        "relation_correct": true,
+        "tool_trace_compliant": true,
+        "tool_issues": [],
+        "tool_calls": [
+          {
+            "tool": "get_project_budget",
+            "args": {
+              "project_name": "alpha"
+            },
+            "result": 2175000.0
+          },
+          {
+            "tool": "get_project_budget",
+            "args": {
+              "project_name": "beta"
+            },
+            "result": 825000.0
+          },
+          {
+            "tool": "apply_percentage_change",
+            "args": {
+              "project_name": "alpha",
+              "value": 2175000,
+              "percentage": 20
+            },
+            "result": 2610000.0
+          },
+          {
+            "tool": "apply_percentage_change",
+            "args": {
+              "project_name": "beta",
+              "value": 825000,
+              "percentage": 50
+            },
+            "result": 1237500.0
+          },
+          {
+            "tool": "calculate_percentage_increase",
+            "args": {
+              "new_value": 2610000,
+              "old_value": 1237500
+            },
+            "result": 110.91
+          }
+        ]
+      },
+      {
+        "question": "Исходные бюджеты Alpha и Beta доступны через инструменты. Изменения по порядку: бюджет Beta увеличили на 50%; бюджет Alpha не менялся. Каков процентный размер отличия итогового бюджета Alpha от итогового бюджета Beta? Укажи процент и обязательно назови, какой бюджет больше.",
+        "expected": 18.35,
+        "predicted": 18.35,
+        "answer": "Итоговый бюджет Alpha составляет 2 725 000 руб., а итоговый бюджет Beta — 3 337 500 руб.\n\nИтоговый бюджет Beta больше итогового бюджета Alpha на 22.47% (или итоговый бюджет Alpha меньше итогового бюджета Beta на 18.35%). Итоговый бюджет Beta больше.",
+        "correct": true,
+        "numeric_correct": true,
+        "relation_correct": true,
+        "tool_trace_compliant": true,
+        "tool_issues": [],
+        "tool_calls": [
+          {
+            "tool": "get_project_budget",
+            "args": {
+              "project_name": "alpha"
+            },
+            "result": 2725000.0
+          },
+          {
+            "tool": "get_project_budget",
+            "args": {
+              "project_name": "beta"
+            },
+            "result": 2225000.0
+          },
+          {
+            "tool": "apply_percentage_change",
+            "args": {
+              "project_name": "beta",
+              "value": 2225000,
+              "percentage": 50
+            },
+            "result": 3337500.0
+          },
+          {
+            "tool": "calculate_percentage_increase",
+            "args": {
+              "new_value": 2725000,
+              "old_value": 3337500
+            },
+            "result": -18.35
+          }
+        ]
+      },
+      {
+        "question": "Исходные бюджеты Alpha и Beta доступны через инструменты. Изменения по порядку: бюджет Alpha уменьшили на 30%; затем бюджет Beta увеличили на 10%. Каков процентный размер отличия итогового бюджета Alpha от итогового бюджета Beta? Укажи процент и обязательно назови, какой бюджет больше.",
+        "expected": 47.93,
+        "predicted": 47.93,
+        "answer": "Итоговый бюджет Alpha составляет 630 000 рублей, а итоговый бюджет Beta — 1 210 000 рублей. \n\nБюджет Beta больше бюджета Alpha на 47.93%. (Или итоговый бюджет Alpha меньше итогового бюджета Beta на 47.93%).",
+        "correct": true,
+        "numeric_correct": true,
+        "relation_correct": true,
+        "tool_trace_compliant": true,
+        "tool_issues": [],
+        "tool_calls": [
+          {
+            "tool": "get_project_budget",
+            "args": {
+              "project_name": "alpha"
+            },
+            "result": 900000.0
+          },
+          {
+            "tool": "get_project_budget",
+            "args": {
+              "project_name": "beta"
+            },
+            "result": 1100000.0
+          },
+          {
+            "tool": "apply_percentage_change",
+            "args": {
+              "project_name": "alpha",
+              "value": 900000,
+              "percentage": -30
+            },
+            "result": 630000.0
+          },
+          {
+            "tool": "apply_percentage_change",
+            "args": {
+              "project_name": "beta",
+              "value": 1100000,
+              "percentage": 10
+            },
+            "result": 1210000.0
+          },
+          {
+            "tool": "calculate_percentage_increase",
+            "args": {
+              "new_value": 630000,
+              "old_value": 1210000
+            },
+            "result": -47.93
+          }
+        ]
+      },
+      {
+        "question": "Исходные бюджеты Alpha и Beta доступны через инструменты. Изменения по порядку: бюджет Alpha увеличили на 15%; затем бюджет Alpha увеличили на 10%; бюджет Beta не менялся. Каков процентный размер отличия итогового бюджета Alpha от итогового бюджета Beta? Укажи процент и обязательно назови, какой бюджет больше.",
+        "expected": 43.36,
+        "predicted": 43.36,
+        "answer": "Итоговый бюджет Alpha (948 750 руб.) меньше итогового бюджета Beta (1 675 000 руб.) на 43.36%. Итоговый бюджет Beta больше.",
+        "correct": true,
+        "numeric_correct": true,
+        "relation_correct": true,
+        "tool_trace_compliant": true,
+        "tool_issues": [],
+        "tool_calls": [
+          {
+            "tool": "get_project_budget",
+            "args": {
+              "project_name": "alpha"
+            },
+            "result": 750000.0
+          },
+          {
+            "tool": "get_project_budget",
+            "args": {
+              "project_name": "beta"
+            },
+            "result": 1675000.0
+          },
+          {
+            "tool": "apply_percentage_change",
+            "args": {
+              "project_name": "alpha",
+              "value": 750000,
+              "percentage": 15
+            },
+            "result": 862500.0
+          },
+          {
+            "tool": "apply_percentage_change",
+            "args": {
+              "project_name": "alpha",
+              "value": 862500,
+              "percentage": 10
+            },
+            "result": 948750.0
+          },
+          {
+            "tool": "calculate_percentage_increase",
+            "args": {
+              "new_value": 948750,
+              "old_value": 1675000
+            },
+            "result": -43.36
+          }
+        ]
+      },
+      {
+        "question": "Исходные бюджеты Alpha и Beta доступны через инструменты. Изменения по порядку: бюджет Alpha уменьшили на 20%; затем бюджет Beta уменьшили на 5%. Каков процентный размер отличия итогового бюджета Alpha от итогового бюджета Beta? Укажи процент и обязательно назови, какой бюджет больше.",
+        "expected": 47.37,
+        "predicted": 47.37,
+        "answer": "Итоговый бюджет Alpha составляет 1 820 000 рублей, а итоговый бюджет Beta — 1 235 000 рублей. \n\nБюджет Alpha больше бюджета Beta на **47.37%**.",
+        "correct": true,
+        "numeric_correct": true,
+        "relation_correct": true,
+        "tool_trace_compliant": true,
+        "tool_issues": [],
+        "tool_calls": [
+          {
+            "tool": "get_project_budget",
+            "args": {
+              "project_name": "alpha"
+            },
+            "result": 2275000.0
+          },
+          {
+            "tool": "get_project_budget",
+            "args": {
+              "project_name": "beta"
+            },
+            "result": 1300000.0
+          },
+          {
+            "tool": "apply_percentage_change",
+            "args": {
+              "project_name": "alpha",
+              "value": 2275000,
+              "percentage": -20
+            },
+            "result": 1820000.0
+          },
+          {
+            "tool": "apply_percentage_change",
+            "args": {
+              "project_name": "beta",
+              "value": 1300000,
+              "percentage": -5
+            },
+            "result": 1235000.0
+          },
+          {
+            "tool": "calculate_percentage_increase",
+            "args": {
+              "new_value": 1820000,
+              "old_value": 1235000
+            },
+            "result": 47.37
+          }
+        ]
+      },
+      {
+        "question": "Исходные бюджеты Alpha и Beta доступны через инструменты. Изменения по порядку: бюджет Alpha увеличили на 15%; затем бюджет Beta увеличили на 30%. Каков процентный размер отличия итогового бюджета Alpha от итогового бюджета Beta? Укажи процент и обязательно назови, какой бюджет больше.",
+        "expected": 47.23,
+        "predicted": 47.23,
+        "answer": "Итоговый бюджет Alpha составляет 977 500 рублей, а итоговый бюджет Beta — 1 852 500 рублей. \n\nБюджет Beta больше бюджета Alpha на 47.23% (соответственно, итоговый бюджет Alpha меньше итогового бюджета Beta на 47.23%). Итоговый бюджет Beta больше.",
+        "correct": true,
+        "numeric_correct": true,
+        "relation_correct": true,
+        "tool_trace_compliant": true,
+        "tool_issues": [],
+        "tool_calls": [
+          {
+            "tool": "get_project_budget",
+            "args": {
+              "project_name": "alpha"
+            },
+            "result": 850000.0
+          },
+          {
+            "tool": "get_project_budget",
+            "args": {
+              "project_name": "beta"
+            },
+            "result": 1425000.0
+          },
+          {
+            "tool": "apply_percentage_change",
+            "args": {
+              "project_name": "alpha",
+              "value": 850000,
+              "percentage": 15
+            },
+            "result": 977500.0
+          },
+          {
+            "tool": "apply_percentage_change",
+            "args": {
+              "project_name": "beta",
+              "value": 1425000,
+              "percentage": 30
+            },
+            "result": 1852500.0
+          },
+          {
+            "tool": "calculate_percentage_increase",
+            "args": {
+              "new_value": 977500,
+              "old_value": 1852500
+            },
+            "result": -47.23
+          }
+        ]
+      }
+    ]
+  },
+  "baseline_holdout": {
+    "accuracy": 1.0,
+    "numeric_accuracy": 1.0,
+    "relation_accuracy": 1.0,
+    "tool_trace_compliance": 1.0,
+    "results": [
+      {
+        "question": "Исходные бюджеты Alpha и Beta доступны через инструменты. Изменения по порядку: бюджет Beta увеличили на 25%; затем бюджет Beta уменьшили на 20%; бюджет Alpha не менялся. Каков процентный размер отличия итогового бюджета Alpha от итогового бюджета Beta? Укажи процент и обязательно назови, какой бюджет больше.",
+        "expected": 26.67,
+        "predicted": 26.67,
+        "answer": "Бюджет Alpha больше бюджета Beta на **26.67%**.",
+        "correct": true,
+        "numeric_correct": true,
+        "relation_correct": true,
+        "tool_trace_compliant": true,
+        "tool_issues": [],
+        "tool_calls": [
+          {
+            "tool": "get_project_budget",
+            "args": {
+              "project_name": "beta"
+            },
+            "result": 1875000.0
+          },
+          {
+            "tool": "get_project_budget",
+            "args": {
+              "project_name": "alpha"
+            },
+            "result": 2375000.0
+          },
+          {
+            "tool": "apply_percentage_change",
+            "args": {
+              "project_name": "beta",
+              "value": 1875000,
+              "percentage": 25
+            },
+            "result": 2343750.0
+          },
+          {
+            "tool": "apply_percentage_change",
+            "args": {
+              "project_name": "beta",
+              "value": 2343750,
+              "percentage": -20
+            },
+            "result": 1875000.0
+          },
+          {
+            "tool": "calculate_percentage_increase",
+            "args": {
+              "new_value": 2375000,
+              "old_value": 1875000
+            },
+            "result": 26.67
+          }
+        ]
+      },
+      {
+        "question": "Исходные бюджеты Alpha и Beta доступны через инструменты. Изменения по порядку: бюджет Alpha увеличили на 5%; затем бюджет Alpha увеличили на 5%; бюджет Beta не менялся. Каков процентный размер отличия итогового бюджета Alpha от итогового бюджета Beta? Укажи процент и обязательно назови, какой бюджет больше.",
+        "expected": 308.33,
+        "predicted": 308.33,
+        "answer": "Итоговый бюджет Alpha больше бюджета Beta на **308,33%** (бюджет Alpha больше).",
+        "correct": true,
+        "numeric_correct": true,
+        "relation_correct": true,
+        "tool_trace_compliant": true,
+        "tool_issues": [],
+        "tool_calls": [
+          {
+            "tool": "get_project_budget",
+            "args": {
+              "project_name": "alpha"
+            },
+            "result": 2500000.0
+          },
+          {
+            "tool": "get_project_budget",
+            "args": {
+              "project_name": "beta"
+            },
+            "result": 675000.0
+          },
+          {
+            "tool": "apply_percentage_change",
+            "args": {
+              "project_name": "alpha",
+              "value": 2500000,
+              "percentage": 5
+            },
+            "result": 2625000.0
+          },
+          {
+            "tool": "apply_percentage_change",
+            "args": {
+              "project_name": "alpha",
+              "value": 2625000,
+              "percentage": 5
+            },
+            "result": 2756250.0
+          },
+          {
+            "tool": "calculate_percentage_increase",
+            "args": {
+              "new_value": 2756250,
+              "old_value": 675000
+            },
+            "result": 308.33
+          }
+        ]
+      },
+      {
+        "question": "Исходные бюджеты Alpha и Beta доступны через инструменты. Изменения по порядку: бюджет Beta увеличили на 5%; затем бюджет Beta увеличили на 20%; бюджет Alpha не менялся. Каков процентный размер отличия итогового бюджета Alpha от итогового бюджета Beta? Укажи процент и обязательно назови, какой бюджет больше.",
+        "expected": 23.73,
+        "predicted": 23.73,
+        "answer": "Бюджет Beta больше бюджета Alpha на 23.73%.",
+        "correct": true,
+        "numeric_correct": true,
+        "relation_correct": true,
+        "tool_trace_compliant": true,
+        "tool_issues": [],
+        "tool_calls": [
+          {
+            "tool": "get_project_budget",
+            "args": {
+              "project_name": "alpha"
+            },
+            "result": 1850000.0
+          },
+          {
+            "tool": "get_project_budget",
+            "args": {
+              "project_name": "beta"
+            },
+            "result": 1925000.0
+          },
+          {
+            "tool": "apply_percentage_change",
+            "args": {
+              "project_name": "beta",
+              "value": 1925000,
+              "percentage": 5
+            },
+            "result": 2021250.0
+          },
+          {
+            "tool": "apply_percentage_change",
+            "args": {
+              "project_name": "beta",
+              "value": 2021250,
+              "percentage": 20
+            },
+            "result": 2425500.0
+          },
+          {
+            "tool": "calculate_percentage_increase",
+            "args": {
+              "new_value": 1850000,
+              "old_value": 2425500
+            },
+            "result": -23.73
+          }
+        ]
+      },
+      {
+        "question": "Исходные бюджеты Alpha и Beta доступны через инструменты. Изменения по порядку: бюджет Alpha увеличили на 10%; затем бюджет Beta увеличили на 20%; затем бюджет Alpha уменьшили на 15%. Каков процентный размер отличия итогового бюджета Alpha от итогового бюджета Beta? Укажи процент и обязательно назови, какой бюджет больше.",
+        "expected": 51.94,
+        "predicted": 51.94,
+        "answer": "Бюджет Beta больше бюджета Alpha на **51.94%**.",
+        "correct": true,
+        "numeric_correct": true,
+        "relation_correct": true,
+        "tool_trace_compliant": true,
+        "tool_issues": [],
+        "tool_calls": [
+          {
+            "tool": "get_project_budget",
+            "args": {
+              "project_name": "alpha"
+            },
+            "result": 1650000.0
+          },
+          {
+            "tool": "get_project_budget",
+            "args": {
+              "project_name": "beta"
+            },
+            "result": 2675000.0
+          },
+          {
+            "tool": "apply_percentage_change",
+            "args": {
+              "project_name": "alpha",
+              "value": 1650000,
+              "percentage": 10
+            },
+            "result": 1815000.0
+          },
+          {
+            "tool": "apply_percentage_change",
+            "args": {
+              "project_name": "beta",
+              "value": 2675000,
+              "percentage": 20
+            },
+            "result": 3210000.0
+          },
+          {
+            "tool": "apply_percentage_change",
+            "args": {
+              "project_name": "alpha",
+              "value": 1815000,
+              "percentage": -15
+            },
+            "result": 1542750.0
+          },
+          {
+            "tool": "calculate_percentage_increase",
+            "args": {
+              "new_value": 1542750,
+              "old_value": 3210000
+            },
+            "result": -51.94
+          }
+        ]
+      }
+    ]
+  },
+  "selected_holdout": {
+    "accuracy": 1.0,
+    "numeric_accuracy": 1.0,
+    "relation_accuracy": 1.0,
+    "tool_trace_compliance": 1.0,
+    "results": [
+      {
+        "question": "Исходные бюджеты Alpha и Beta доступны через инструменты. Изменения по порядку: бюджет Beta увеличили на 25%; затем бюджет Beta уменьшили на 20%; бюджет Alpha не менялся. Каков процентный размер отличия итогового бюджета Alpha от итогового бюджета Beta? Укажи процент и обязательно назови, какой бюджет больше.",
+        "expected": 26.67,
+        "predicted": 26.67,
+        "answer": "Итоговый бюджет Alpha составляет 2 375 000 рублей, а итоговый бюджет Beta после всех изменений вернулся к исходному значению и составляет 1 875 000 рублей. \n\nБюджет Alpha больше бюджета Beta на 26.67%.",
+        "correct": true,
+        "numeric_correct": true,
+        "relation_correct": true,
+        "tool_trace_compliant": true,
+        "tool_issues": [],
+        "tool_calls": [
+          {
+            "tool": "get_project_budget",
+            "args": {
+              "project_name": "alpha"
+            },
+            "result": 2375000.0
+          },
+          {
+            "tool": "get_project_budget",
+            "args": {
+              "project_name": "beta"
+            },
+            "result": 1875000.0
+          },
+          {
+            "tool": "apply_percentage_change",
+            "args": {
+              "project_name": "beta",
+              "value": 1875000,
+              "percentage": 25
+            },
+            "result": 2343750.0
+          },
+          {
+            "tool": "apply_percentage_change",
+            "args": {
+              "project_name": "beta",
+              "value": 2343750,
+              "percentage": -20
+            },
+            "result": 1875000.0
+          },
+          {
+            "tool": "calculate_percentage_increase",
+            "args": {
+              "new_value": 2375000,
+              "old_value": 1875000
+            },
+            "result": 26.67
+          }
+        ]
+      },
+      {
+        "question": "Исходные бюджеты Alpha и Beta доступны через инструменты. Изменения по порядку: бюджет Alpha увеличили на 5%; затем бюджет Alpha увеличили на 5%; бюджет Beta не менялся. Каков процентный размер отличия итогового бюджета Alpha от итогового бюджета Beta? Укажи процент и обязательно назови, какой бюджет больше.",
+        "expected": 308.33,
+        "predicted": 308.33,
+        "answer": "Итоговый бюджет Alpha составляет 2 756 250 рублей, а итоговый бюджет Beta — 675 000 рублей. \n\nБюджет Alpha больше бюджета Beta на 308,33%.",
+        "correct": true,
+        "numeric_correct": true,
+        "relation_correct": true,
+        "tool_trace_compliant": true,
+        "tool_issues": [],
+        "tool_calls": [
+          {
+            "tool": "get_project_budget",
+            "args": {
+              "project_name": "alpha"
+            },
+            "result": 2500000.0
+          },
+          {
+            "tool": "get_project_budget",
+            "args": {
+              "project_name": "beta"
+            },
+            "result": 675000.0
+          },
+          {
+            "tool": "apply_percentage_change",
+            "args": {
+              "project_name": "alpha",
+              "value": 2500000,
+              "percentage": 5
+            },
+            "result": 2625000.0
+          },
+          {
+            "tool": "apply_percentage_change",
+            "args": {
+              "project_name": "alpha",
+              "value": 2625000,
+              "percentage": 5
+            },
+            "result": 2756250.0
+          },
+          {
+            "tool": "calculate_percentage_increase",
+            "args": {
+              "new_value": 2756250,
+              "old_value": 675000
+            },
+            "result": 308.33
+          }
+        ]
+      },
+      {
+        "question": "Исходные бюджеты Alpha и Beta доступны через инструменты. Изменения по порядку: бюджет Beta увеличили на 5%; затем бюджет Beta увеличили на 20%; бюджет Alpha не менялся. Каков процентный размер отличия итогового бюджета Alpha от итогового бюджета Beta? Укажи процент и обязательно назови, какой бюджет больше.",
+        "expected": 23.73,
+        "predicted": 23.73,
+        "answer": "Итоговый бюджет Alpha составляет 1 850 000 руб., а итоговый бюджет Beta — 2 425 500 руб.\n\nБюджет Beta больше бюджета Alpha на 23.73% (относительно бюджета Beta бюджет Alpha меньше на 23.73%). Итоговый бюджет Beta больше.",
+        "correct": true,
+        "numeric_correct": true,
+        "relation_correct": true,
+        "tool_trace_compliant": true,
+        "tool_issues": [],
+        "tool_calls": [
+          {
+            "tool": "get_project_budget",
+            "args": {
+              "project_name": "alpha"
+            },
+            "result": 1850000.0
+          },
+          {
+            "tool": "get_project_budget",
+            "args": {
+              "project_name": "beta"
+            },
+            "result": 1925000.0
+          },
+          {
+            "tool": "apply_percentage_change",
+            "args": {
+              "project_name": "beta",
+              "value": 1925000,
+              "percentage": 5
+            },
+            "result": 2021250.0
+          },
+          {
+            "tool": "apply_percentage_change",
+            "args": {
+              "project_name": "beta",
+              "value": 2021250,
+              "percentage": 20
+            },
+            "result": 2425500.0
+          },
+          {
+            "tool": "calculate_percentage_increase",
+            "args": {
+              "new_value": 1850000,
+              "old_value": 2425500
+            },
+            "result": -23.73
+          }
+        ]
+      },
+      {
+        "question": "Исходные бюджеты Alpha и Beta доступны через инструменты. Изменения по порядку: бюджет Alpha увеличили на 10%; затем бюджет Beta увеличили на 20%; затем бюджет Alpha уменьшили на 15%. Каков процентный размер отличия итогового бюджета Alpha от итогового бюджета Beta? Укажи процент и обязательно назови, какой бюджет больше.",
+        "expected": 51.94,
+        "predicted": 51.94,
+        "answer": "Итоговый бюджет Alpha составляет 1 542 750 рублей, а итоговый бюджет Beta — 3 210 000 рублей. \n\nБюджет Beta больше бюджета Alpha на **51.94%** (итоговый бюджет Alpha меньше бюджета Beta на **51.94%**). \nИтоговый бюджет **Beta** больше.",
+        "correct": true,
+        "numeric_correct": true,
+        "relation_correct": true,
+        "tool_trace_compliant": true,
+        "tool_issues": [],
+        "tool_calls": [
+          {
+            "tool": "get_project_budget",
+            "args": {
+              "project_name": "alpha"
+            },
+            "result": 1650000.0
+          },
+          {
+            "tool": "get_project_budget",
+            "args": {
+              "project_name": "beta"
+            },
+            "result": 2675000.0
+          },
+          {
+            "tool": "apply_percentage_change",
+            "args": {
+              "project_name": "alpha",
+              "value": 1650000,
+              "percentage": 10
+            },
+            "result": 1815000.0
+          },
+          {
+            "tool": "apply_percentage_change",
+            "args": {
+              "project_name": "beta",
+              "value": 2675000,
+              "percentage": 20
+            },
+            "result": 3210000.0
+          },
+          {
+            "tool": "apply_percentage_change",
+            "args": {
+              "project_name": "alpha",
+              "value": 1815000,
+              "percentage": -15
+            },
+            "result": 1542750.0
+          },
+          {
+            "tool": "calculate_percentage_increase",
+            "args": {
+              "new_value": 1542750,
+              "old_value": 3210000
+            },
+            "result": -51.94
+          }
+        ]
+      }
+    ]
+  }
+}

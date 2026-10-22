@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="320" viewBox="0 0 760 320">
+<rect width="100%" height="100%" fill="white"/>
+<text x="22" y="32" font-size="20" font-family="Arial">AgentForge: accuracy by split</text>
+<text x="22" y="85" font-size="13" font-family="Arial">Baseline / TRAIN</text>
+<rect x="220" y="68" width="470" height="25" fill="#eef0f2" rx="4"/>
+<rect x="220" y="68" width="352.50" height="25" fill="#778899" rx="4"/>
+<text x="700" y="85" font-size="14" font-family="Arial">75%</text>
+<text x="22" y="146" font-size="13" font-family="Arial">Selected / TRAIN</text>
+<rect x="220" y="129" width="470" height="25" fill="#eef0f2" rx="4"/>
+<rect x="220" y="129" width="470.00" height="25" fill="#2c7a7b" rx="4"/>
+<text x="700" y="146" font-size="14" font-family="Arial">100%</text>
+<text x="22" y="207" font-size="13" font-family="Arial">Baseline / HOLDOUT</text>
+<rect x="220" y="190" width="470" height="25" fill="#eef0f2" rx="4"/>
+<rect x="220" y="190" width="235.00" height="25" fill="#778899" rx="4"/>
+<text x="700" y="207" font-size="14" font-family="Arial">50%</text>
+<text x="22" y="268" font-size="13" font-family="Arial">Selected / HOLDOUT</text>
+<rect x="220" y="251" width="470" height="25" fill="#eef0f2" rx="4"/>
+<rect x="220" y="251" width="470.00" height="25" fill="#2c7a7b" rx="4"/>
+<text x="700" y="268" font-size="14" font-family="Arial">100%</text>
+</svg>
